@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite" // možeš kasnije lako promeniti na PostgreSQL
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  incomes   Income[]
+  expenses  Expense[]
+}
+
+model Income {
+  id          Int             @id @default(autoincrement())
+  userId      Int
+  amount      Int
+  currency    String
+  categoryId  Int
+  description String
+  createdAt   DateTime        @default(now())
+
+  user        User            @relation(fields: [userId], references: [id])
+  category    IncomeCategory  @relation(fields: [categoryId], references: [id])
+}
+
+model Expense {
+  id          Int              @id @default(autoincrement())
+  userId      Int
+  amount      Int
+  currency    String
+  categoryId  Int
+  description String
+  createdAt   DateTime         @default(now())
+
+  user        User             @relation(fields: [userId], references: [id])
+  category    ExpenseCategory  @relation(fields: [categoryId], references: [id])
+}
+
+model ExpenseCategory {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  expenses  Expense[]
+}
+
+model IncomeCategory {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  incomes  Income[]
+}
