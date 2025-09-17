@@ -16,38 +16,37 @@ async function main() {
     },
   });
 
+  // Definiši kategorije prihoda i rashoda
+  const incomeCategoryNames = ["Salary", "Freelance", "Investments", "Gifts"];
+  const expenseCategoryNames = [
+    "Food",
+    "Rent",
+    "Transport",
+    "Entertainment",
+    "Utilities",
+  ];
+
   // Kreiraj kategorije prihoda
-  const incomeCategories = await Promise.all([
-    prisma.incomeCategory.upsert({
-      where: { name: "Salary" },
-      update: {},
-      create: { name: "Salary" },
-    }),
-    prisma.incomeCategory.upsert({
-      where: { name: "Freelance" },
-      update: {},
-      create: { name: "Freelance" },
-    }),
-  ]);
+  const incomeCategories = await Promise.all(
+    incomeCategoryNames.map((name) =>
+      prisma.incomeCategory.upsert({
+        where: { name },
+        update: {},
+        create: { name },
+      })
+    )
+  );
 
   // Kreiraj kategorije rashoda
-  const expenseCategories = await Promise.all([
-    prisma.expenseCategory.upsert({
-      where: { name: "Food" },
-      update: {},
-      create: { name: "Food" },
-    }),
-    prisma.expenseCategory.upsert({
-      where: { name: "Rent" },
-      update: {},
-      create: { name: "Rent" },
-    }),
-    prisma.expenseCategory.upsert({
-      where: { name: "Transport" },
-      update: {},
-      create: { name: "Transport" },
-    }),
-  ]);
+  const expenseCategories = await Promise.all(
+    expenseCategoryNames.map((name) =>
+      prisma.expenseCategory.upsert({
+        where: { name },
+        update: {},
+        create: { name },
+      })
+    )
+  );
 
   // Dodaj primer prihoda
   await prisma.income.create({

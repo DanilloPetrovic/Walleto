@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite" // možeš kasnije lako promeniti na PostgreSQL
+  provider = "sqlite" 
   url      = "file:./dev.db"
 }
 
