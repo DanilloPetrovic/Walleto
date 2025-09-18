@@ -3,6 +3,18 @@ import jwt from "jsonwebtoken";
 import prisma from "../utils/prisma";
 import createHttpError from "http-errors";
 
+const DEFAULT_INCOME_CATEGORIES = ["Salary", "Freelance", "Investment", "Gift"];
+const DEFAULT_EXPENSE_CATEGORIES = [
+  "Food",
+  "Transport",
+  "Bills",
+  "Shopping",
+  "Entertainment",
+  "Health",
+  "Education",
+  "Travel",
+];
+
 export const register = async (data: {
   name: string;
   email: string;
@@ -25,6 +37,26 @@ export const register = async (data: {
       password: hashedPassword,
     },
   });
+
+  await Promise.all(
+    DEFAULT_INCOME_CATEGORIES.map((name) =>
+      prisma.incomeCategory.upsert({
+        where: { name },
+        update: {},
+        create: { name },
+      })
+    )
+  );
+
+  await Promise.all(
+    DEFAULT_EXPENSE_CATEGORIES.map((name) =>
+      prisma.expenseCategory.upsert({
+        where: { name },
+        update: {},
+        create: { name },
+      })
+    )
+  );
 
   const { password, ...userWithoutPassword } = user;
   return userWithoutPassword;
