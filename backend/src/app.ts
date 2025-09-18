@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import userRoutes from "./routes/userRoutes";
 import categoryRoutes from "./routes/categoryRoutes";
+import transactionRoutes from "./routes/transactionRoutes";
 import authMiddleware from "./middlewares/authMiddleware";
 import errorHandler from "./middlewares/errorHandler";
 import { AuthenticatedRequest } from "./types/AuthenticatedRequest";
@@ -25,6 +26,7 @@ app.get("/protected", authMiddleware, (req: AuthenticatedRequest, res) => {
 
 app.use("/api/users", userRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/transaction", transactionRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

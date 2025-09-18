@@ -37,7 +37,9 @@ export const remove = async (req: Request, res: Response) => {
 export const getAll = async (req: Request, res: Response) => {
   const { for: type } = req.query;
 
-  const categories = await categoryService.getAllCategories(String(type));
+  const categories = await categoryService.getAllCategories(
+    type ? String(type) : undefined
+  );
 
   res.status(200).json(categories);
 };

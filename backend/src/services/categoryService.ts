@@ -146,23 +146,26 @@ export const editCategory = async (data: {
   }
 };
 
-export const getAllCategories = async (type: string) => {
-  if (type !== "income" && type !== "expense") {
-    throw createHttpError(
-      400,
-      "Invalid category type. Must be 'income' or 'expense'"
-    );
-  }
-
+export const getAllCategories = async (type?: string) => {
   try {
     if (type === "income") {
       return await prisma.incomeCategory.findMany({
         orderBy: { id: "asc" },
       });
-    } else {
+    } else if (type === "expense") {
       return await prisma.expenseCategory.findMany({
         orderBy: { id: "asc" },
       });
+    } else {
+      const [incomeCategories, expenseCategories] = await Promise.all([
+        prisma.incomeCategory.findMany({ orderBy: { id: "asc" } }),
+        prisma.expenseCategory.findMany({ orderBy: { id: "asc" } }),
+      ]);
+
+      return {
+        income: incomeCategories,
+        expense: expenseCategories,
+      };
     }
   } catch (error) {
     throw createHttpError(500, "Error fetching categories");
